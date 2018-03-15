@@ -23,7 +23,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <limits.h>
-
+#include <kernel.h>					//c
 #include "aws_iot_config.h"
 #include "aws_iot_log.h"
 #include "aws_iot_version.h"
@@ -58,10 +58,12 @@
 
 #define MAX_LENGTH_OF_UPDATE_JSON_BUFFER 200
 
-static char certDirectory[PATH_MAX + 1] = "../../../certs";
-static char HostAddress[255] = AWS_IOT_MQTT_HOST;
-static uint32_t port = AWS_IOT_MQTT_PORT;
-static uint8_t numPubs = 5;
+#define PATH_MAX 200 //c
+
+static char certDirectory[PATH_MAX + 1] = "../certs";			//c
+//static char HostAddress[255] = AWS_IOT_MQTT_HOST;
+//static uint32_t port = AWS_IOT_MQTT_PORT;					//c
+//static uint8_t numPubs = 5;
 
 static void simulateRoomTemperature(float *pRoomTemperature) {
 	static float deltaChange;
@@ -100,8 +102,12 @@ void windowActuate_Callback(const char *pJsonString, uint32_t JsonStringDataLen,
 	}
 }
 
-void parseInputArgsForConnectParams(int argc, char **argv) {
-	int opt;
+/*void parseInputArgsForConnectParams() {
+	int opt=0;
+	char optopt;    //c
+	char optarg[255];   //c
+	char certDirectory[255];   //c
+
 
 	while(-1 != (opt = getopt(argc, argv, "h:p:c:n:"))) {
 		switch(opt) {
@@ -136,16 +142,22 @@ void parseInputArgsForConnectParams(int argc, char **argv) {
 		}
 	}
 
-}
+}*/
 
-int main(int argc, char **argv) {
+void main(void) {				//c
 	IoT_Error_t rc = FAILURE;
-	int32_t i = 0;
+	//int32_t i = 0;		//c
 
 	char JsonDocumentBuffer[MAX_LENGTH_OF_UPDATE_JSON_BUFFER];
 	size_t sizeOfJsonDocumentBuffer = sizeof(JsonDocumentBuffer) / sizeof(JsonDocumentBuffer[0]);
-	char *pJsonStringToUpdate;
+	//char *pJsonStringToUpdate;		//c
 	float temperature = 0.0;
+
+	uint32_t start_time;			//c
+	uint32_t stop_time;
+	uint32_t cycles_spent;
+	uint32_t nanoseconds_spent;
+	int ns=0;
 
 	bool windowOpen = false;
 	jsonStruct_t windowActuator;
@@ -167,7 +179,10 @@ int main(int argc, char **argv) {
 
 	IOT_INFO("\nAWS IoT SDK Version %d.%d.%d-%s\n", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, VERSION_TAG);
 
-	getcwd(CurrentWD, sizeof(CurrentWD));
+	//getcwd(CurrentWD, sizeof(CurrentWD));
+	char *CurrentWD1 = "/home/tejas777/zephyr-1.9.2/zephyr/samples/net/awsiot_shadow_sample/src";		//c
+	strcpy(CurrentWD,CurrentWD1);	
+	
 	snprintf(rootCA, PATH_MAX + 1, "%s/%s/%s", CurrentWD, certDirectory, AWS_IOT_ROOT_CA_FILENAME);
 	snprintf(clientCRT, PATH_MAX + 1, "%s/%s/%s", CurrentWD, certDirectory, AWS_IOT_CERTIFICATE_FILENAME);
 	snprintf(clientKey, PATH_MAX + 1, "%s/%s/%s", CurrentWD, certDirectory, AWS_IOT_PRIVATE_KEY_FILENAME);
@@ -176,7 +191,7 @@ int main(int argc, char **argv) {
 	IOT_DEBUG("clientCRT %s", clientCRT);
 	IOT_DEBUG("clientKey %s", clientKey);
 
-	parseInputArgsForConnectParams(argc, argv);
+	//parseInputArgsForConnectParams();
 
 	// initialize the mqtt client
 	AWS_IoT_Client mqttClient;
@@ -194,7 +209,7 @@ int main(int argc, char **argv) {
 	rc = aws_iot_shadow_init(&mqttClient, &sp);
 	if(SUCCESS != rc) {
 		IOT_ERROR("Shadow Connection Error");
-		return rc;
+		//return rc;							//c
 	}
 
 	ShadowConnectParameters_t scp = ShadowConnectParametersDefault;
@@ -206,7 +221,7 @@ int main(int argc, char **argv) {
 	rc = aws_iot_shadow_connect(&mqttClient, &scp);
 	if(SUCCESS != rc) {
 		IOT_ERROR("Shadow Connection Error");
-		return rc;
+		//return rc;							//c
 	}
 
 	/*
@@ -217,7 +232,7 @@ int main(int argc, char **argv) {
 	rc = aws_iot_shadow_set_autoreconnect_status(&mqttClient, true);
 	if(SUCCESS != rc) {
 		IOT_ERROR("Unable to set Auto Reconnect to true - %d", rc);
-		return rc;
+		//return rc;								//c
 	}
 
 	rc = aws_iot_shadow_register_delta(&mqttClient, &windowActuator);
@@ -231,7 +246,15 @@ int main(int argc, char **argv) {
 	while(NETWORK_ATTEMPTING_RECONNECT == rc || NETWORK_RECONNECTED == rc || SUCCESS == rc) {
 		rc = aws_iot_shadow_yield(&mqttClient, 200);
 		if(NETWORK_ATTEMPTING_RECONNECT == rc) {
-			sleep(1);
+			//sleep(1);
+			ns=0;
+			while(nanoseconds_spent < 1000000000){					//c
+				start_time = k_cycle_get_32();
+				stop_time = k_cycle_get_32();
+				cycles_spent = stop_time - start_time;
+				nanoseconds_spent = SYS_CLOCK_HW_CYCLES_TO_NS(cycles_spent);
+				ns=ns+nanoseconds_spent;
+			}
 			// If the client is attempting to reconnect we will skip the rest of the loop.
 			continue;
 		}
@@ -253,7 +276,15 @@ int main(int argc, char **argv) {
 			}
 		}
 		IOT_INFO("*****************************************************************************************\n");
-		sleep(1);
+		//sleep(1);
+		ns=0;
+			while(nanoseconds_spent < 1000000000){						//c
+				start_time = k_cycle_get_32();
+				stop_time = k_cycle_get_32();
+				cycles_spent = stop_time - start_time;
+				nanoseconds_spent = SYS_CLOCK_HW_CYCLES_TO_NS(cycles_spent);
+				ns=ns+nanoseconds_spent;
+			}
 	}
 
 	if(SUCCESS != rc) {
@@ -267,5 +298,5 @@ int main(int argc, char **argv) {
 		IOT_ERROR("Disconnect error %d", rc);
 	}
 
-	return rc;
+	//return rc;									//c
 }

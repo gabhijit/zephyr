@@ -32,7 +32,7 @@ extern "C" {
 #include <stdbool.h>
 #include <aws_iot_error.h>
 #include "timer_interface.h"
-#include "network_platform.h"
+#include "../platform/mbedtls/network_platform.h"
 
 /**
  * @brief Network Type
