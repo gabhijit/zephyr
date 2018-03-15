@@ -248,7 +248,7 @@ void main(void) {				//c
 		if(NETWORK_ATTEMPTING_RECONNECT == rc) {
 			//sleep(1);
 			ns=0;
-			while(nanoseconds_spent < 1000000){					//c
+			while(nanoseconds_spent < 1000000000){					//c
 				start_time = k_cycle_get_32();
 				stop_time = k_cycle_get_32();
 				cycles_spent = stop_time - start_time;
@@ -278,7 +278,7 @@ void main(void) {				//c
 		IOT_INFO("*****************************************************************************************\n");
 		//sleep(1);
 		ns=0;
-			while(nanoseconds_spent < 1000000){						//c
+			while(nanoseconds_spent < 1000000000){						//c
 				start_time = k_cycle_get_32();
 				stop_time = k_cycle_get_32();
 				cycles_spent = stop_time - start_time;
