@@ -34,7 +34,7 @@ extern "C" {
 /**
  * The platform specific timer header that defines the Timer struct
  */
-#include "timer_platform.h"
+#include "../platform/common/timer_platform.h"
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -47,7 +47,7 @@ extern "C" {
  * in "timer_<platform>.h" and include that file above.
  *
  */
-typedef struct Timer Timer;
+//typedef struct Timer Timer;
 
 /**
  * @brief Check if a timer is expired

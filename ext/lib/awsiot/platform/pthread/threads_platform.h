@@ -13,32 +13,31 @@
  * permissions and limitations under the License.
  */
 
-#ifndef SRC_PROTOCOL_MQTT_AWS_IOT_EMBEDDED_CLIENT_WRAPPER_PLATFORM_LINUX_COMMON_TIMER_PLATFORM_H_
-#define SRC_PROTOCOL_MQTT_AWS_IOT_EMBEDDED_CLIENT_WRAPPER_PLATFORM_LINUX_COMMON_TIMER_PLATFORM_H_
+#include "threads_interface.h"
+#ifdef _ENABLE_THREAD_SUPPORT_
+#ifndef IOTSDKC_THREADS_PLATFORM_H_H
+#define IOTSDKC_THREADS_PLATFORM_H_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#include <kernel.h> //c path: /includes in zephyr
+
 /**
- * @file timer_platform.h
+ * @brief Mutex Type
+ *
+ * definition of the Mutex	 struct. Platform specific
+ *
  */
-//#include <sys/time.h>
-//#include <sys/select.h>
-//#include "timer_interface.h"
-/**
- * definition of the Timer struct. Platform specific
- */
- 
-							
-typedef struct {							// c
-	unsigned start_timestamp;
-	/* in milliseconds */
-	int timeout;
-} Timer;
+struct _IoT_Mutex_t {
+	k_mutex lock;
+};
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* SRC_PROTOCOL_MQTT_AWS_IOT_EMBEDDED_CLIENT_WRAPPER_PLATFORM_LINUX_COMMON_TIMER_PLATFORM_H_ */
+#endif /* IOTSDKC_THREADS_PLATFORM_H_H */
+#endif /* _ENABLE_THREAD_SUPPORT_ */
+

@@ -31,13 +31,6 @@ extern "C" {
 /* This is the value used for ssl read timeout */
 #define IOT_SSL_READ_TIMEOUT 10
 
-/* This defines the value of the debug buffer that gets allocated.
- * The value can be altered based on memory constraints
- */
-#ifdef ENABLE_IOT_DEBUG
-#define MBEDTLS_DEBUG_BUFFER_SIZE 2048
-#endif
-
 /*
  * This is a function to do further verification if needed on the cert received
  */
@@ -101,9 +94,8 @@ IoT_Error_t iot_tls_connect(Network *pNetwork, TLSConnectParams *params) {
 	TLSDataParams *tlsDataParams = NULL;
 	char portBuffer[6];
 	char vrfy_buf[512];
-
-#ifdef ENABLE_IOT_DEBUG
-	unsigned char buf[MBEDTLS_DEBUG_BUFFER_SIZE];
+#ifdef IOT_DEBUG
+	unsigned char buf[MBEDTLS_SSL_MAX_CONTENT_LEN + 1];
 #endif
 
 	if(NULL == pNetwork) {
@@ -257,7 +249,7 @@ IoT_Error_t iot_tls_connect(Network *pNetwork, TLSConnectParams *params) {
 		ret = SUCCESS;
 	}
 
-#ifdef ENABLE_IOT_DEBUG
+#ifdef IOT_DEBUG
 	if (mbedtls_ssl_get_peer_cert(&(tlsDataParams->ssl)) != NULL) {
 		IOT_DEBUG("  . Peer certificate information    ...\n");
 		mbedtls_x509_crt_info((char *) buf, sizeof(buf) - 1, "      ", mbedtls_ssl_get_peer_cert(&(tlsDataParams->ssl)));
@@ -273,7 +265,7 @@ IoT_Error_t iot_tls_connect(Network *pNetwork, TLSConnectParams *params) {
 IoT_Error_t iot_tls_write(Network *pNetwork, unsigned char *pMsg, size_t len, Timer *timer, size_t *written_len) {
 	size_t written_so_far;
 	bool isErrorFlag = false;
-	int frags, ret;
+	int frags, ret=0;
 	TLSDataParams *tlsDataParams = &(pNetwork->tlsDataParams);
 
 	for(written_so_far = 0, frags = 0;

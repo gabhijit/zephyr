@@ -14,18 +14,35 @@
  */
 
 #ifndef IOTSDKC_NETWORK_MBEDTLS_PLATFORM_H_H
+/*
+#include "../../../crypto/mbedtls/include/mbedtls/config.h"
 
-//#include "mbedtls/config.h"
-#include "mbedtls/platform.h"
-#include "mbedtls/net.h"
-#include "mbedtls/ssl.h"
-#include "mbedtls/entropy.h"
-#include "mbedtls/ctr_drbg.h"
-#include "mbedtls/certs.h"
-#include "mbedtls/x509.h"
-#include "mbedtls/error.h"
-#include "mbedtls/debug.h"
-#include "mbedtls/timing.h"
+#include "../../../crypto/mbedtls/include/mbedtls/platform.h"
+#include "../../../crypto/mbedtls/include/mbedtls/net.h"
+#include "../../../crypto/mbedtls/include/mbedtls/ssl.h"
+#include "../../../crypto/mbedtls/include/mbedtls/entropy.h"
+#include "../../../crypto/mbedtls/include/mbedtls/ctr_drbg.h"
+#include "../../../crypto/mbedtls/include/mbedtls/certs.h"
+#include "../../../crypto/mbedtls/include/mbedtls/x509.h"
+#include "../../../crypto/mbedtls/include/mbedtls/error.h"
+#include "../../../crypto/mbedtls/include/mbedtls/debug.h"
+#include "../../../crypto/mbedtls/include/mbedtls/timing.h"
+*/
+
+#include "../../../crypto/mbedtls/include/mbedtls/config.h"
+
+#include "../../../crypto/mbedtls/include/mbedtls/platform.h"
+#include "../../../crypto/mbedtls/include/mbedtls/net_sockets.h"
+#include "../../../crypto/mbedtls/include/mbedtls/ssl.h"
+#include "../../../crypto/mbedtls/include/mbedtls/entropy.h"
+#include "../../../crypto/mbedtls/include/mbedtls/ctr_drbg.h"
+#include "../../../crypto/mbedtls/include/mbedtls/certs.h"
+#include "../../../crypto/mbedtls/include/mbedtls/x509.h"
+#include "../../../crypto/mbedtls/include/mbedtls/error.h"
+#include "../../../crypto/mbedtls/include/mbedtls/debug.h"
+#include "../../../crypto/mbedtls/include/mbedtls/timing.h"
+
+
 
 #ifdef __cplusplus
 extern "C" {
